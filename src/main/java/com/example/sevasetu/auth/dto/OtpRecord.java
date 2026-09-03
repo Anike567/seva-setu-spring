@@ -6,10 +6,9 @@ import java.util.UUID;
 
 public record OtpRecord(
     UUID id,
-    String phoneNumber,
     String otpCode,
     LocalDateTime expiresAt,
-    boolean verified,
+    boolean isVerified,
     int attempts,
     LocalDateTime createdAt
 ) {}
