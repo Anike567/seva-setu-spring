@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.sevasetu.auth.dto.RefreshTokenDto;
 import com.example.sevasetu.auth.dto.SendOtpRequest;
 import com.example.sevasetu.auth.dto.VerifyOtp;
 import com.example.sevasetu.auth.service.AuthService;
@@ -47,5 +48,17 @@ public class AuthController {
         System.out.println(verifyOtp.phoneNumber());
         System.out.println(verifyOtp.otp());
         return this.authService.verifyOtp(verifyOtp);
+    }
+
+    @PostMapping (
+        value = "refresh-token",
+        consumes = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
+
+    public ResponseEntity<ApiResponse<Map<String,String>>> refreshToken(@RequestBody RefreshTokenDto refreshTokenDto){
+
+        
+        return this.authService.refreshToken(refreshTokenDto);
     }
 }
