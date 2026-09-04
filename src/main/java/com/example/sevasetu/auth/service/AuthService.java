@@ -43,7 +43,7 @@ public class AuthService {
 
         // 2. Generate random 6-digit OTP
         String generatedOtp = String.format("%06d", secureRandom.nextInt(1_000_000));
-
+        System.out.println("Generated OTP for " + request.phoneNumber() + ": " + generatedOtp);
         // 3. Insert new OTP record with a 5-minute TTL
         String insertOtp = """
                 INSERT INTO otps (id, phone_number, otp_code, expires_at, is_verified, attempts, created_at)

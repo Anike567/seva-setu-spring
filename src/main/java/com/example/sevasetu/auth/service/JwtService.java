@@ -33,6 +33,15 @@ public class JwtService {
         return buildToken(extraClaims, phoneNumber, accessTokenExpiration);
     }
 
+    public boolean isTokenValid(String token) {
+        try {
+            Claims claims = extractAllClaims(token);
+            return claims.getExpiration().after(new Date());
+        } catch (io.jsonwebtoken.JwtException | IllegalArgumentException e) {
+            return false;
+        }
+    }
+
     // 2. Generate Refresh Token (Long-lived)
     public String generateRefreshToken(String phoneNumber) {
         return buildToken(Map.of(), phoneNumber, refreshTokenExpiration);

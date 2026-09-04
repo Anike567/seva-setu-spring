@@ -12,6 +12,9 @@ import com.example.sevasetu.auth.dto.SendOtpRequest;
 import com.example.sevasetu.auth.dto.VerifyOtp;
 import com.example.sevasetu.auth.service.AuthService;
 import com.example.sevasetu.common.ApiResponse;
+
+import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.PostMapping;
 
 
@@ -29,7 +32,7 @@ public class AuthController {
         consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<ApiResponse<Void>> login(@RequestBody SendOtpRequest request) {
+    public ResponseEntity<ApiResponse<Void>> sendOtp(@Valid @RequestBody SendOtpRequest request) {
         return this.authService.sendOtp(request);
     }
 
@@ -39,7 +42,6 @@ public class AuthController {
         consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE
     )
-
     public ResponseEntity<ApiResponse<Map<String,String>>> verifyOtp(@RequestBody VerifyOtp verifyOtp){
 
         System.out.println(verifyOtp.phoneNumber());
