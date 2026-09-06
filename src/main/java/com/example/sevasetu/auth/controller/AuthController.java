@@ -27,7 +27,7 @@ public class AuthController {
     AuthController(AuthService authService) {
         this.authService = authService;
     }
- 
+
     @PostMapping(
        value = "sendotp",
         consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -43,7 +43,7 @@ public class AuthController {
         consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<ApiResponse<Map<String,String>>> verifyOtp(@RequestBody VerifyOtp verifyOtp){
+    public ResponseEntity<ApiResponse<Map<String,Object>>> verifyOtp(@RequestBody VerifyOtp verifyOtp){
 
         System.out.println(verifyOtp.phoneNumber());
         System.out.println(verifyOtp.otp());
@@ -55,10 +55,10 @@ public class AuthController {
         consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE
     )
-
     public ResponseEntity<ApiResponse<Map<String,String>>> refreshToken(@RequestBody RefreshTokenDto refreshTokenDto){
 
-        
+
         return this.authService.refreshToken(refreshTokenDto);
     }
+
 }
