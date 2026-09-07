@@ -26,7 +26,7 @@ async function fetchDataForSlug(slug, maxRetries = 5) {
   const query = new URLSearchParams({ slug, lang: 'en' });
   const url = `https://api.myscheme.gov.in/schemes/v6/public/schemes?${query.toString()}`;
 
-  let retryDelay = 2000; // start with 2-second pause
+  let retryDelay = 200; // start with 2-second pause
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
@@ -35,7 +35,7 @@ async function fetchDataForSlug(slug, maxRetries = 5) {
       if (res.status === 429) {
         console.warn(`[429 Rate Limit] Pausing ${retryDelay / 1000}s on slug "${slug}" (Attempt ${attempt}/${maxRetries})...`);
         await sleep(retryDelay);
-        retryDelay = 2; // exponential backoff: 2s -> 4s -> 8s -> 16s
+        // retryDelay = 2; // exponential backoff: 2s -> 4s -> 8s -> 16s
         continue;
       }
 
@@ -188,5 +188,3 @@ export async function exportAllSchemesToExcel(allSlugs, outputFilename = 'all_sc
   await workbook.xlsx.writeFile(outputFilename);
   console.log(`Finished! Excel written to ${outputFilename}`);
 }
-
-

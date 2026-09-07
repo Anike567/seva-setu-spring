@@ -34,3 +34,5 @@ build/
 node_modules/
 slugs.json
 package-lock.json
+scrapped_records.json
+scraped_records.json
