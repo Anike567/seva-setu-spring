@@ -1,8 +1,5 @@
-import fs from 'node:fs/promises';
-
-const slugs = [];
-let total = 0;
-
+const API_KEY = process.env.MYSCHEME_API_KEY;
+const PUBLIC_API_KEY = 'tYTy5eEhlu9rFjyxuCr7ra7ACp4dv1RH8gWuHTDc';
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const HEADERS = {
@@ -11,22 +8,31 @@ const HEADERS = {
   'origin': 'https://www.myscheme.gov.in',
   'referer': 'https://www.myscheme.gov.in/',
   'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36',
-  'x-api-key': 'tYTy5eEhlu9rFjyxuCr7ra7ACp4dv1RH8gWuHTDc'
+  'x-api-key': API_KEY || PUBLIC_API_KEY
 };
+
+async function fetchJson(url, options = {}, maxRetries = 4) {
+  for (let attempt = 1; attempt <= maxRetries; attempt += 1) {
+    try {
+      const response = await fetch(url, { ...options, signal: AbortSignal.timeout(30_000) });
+      if (response.status === 429 || response.status >= 500) {
+        if (attempt === maxRetries) throw new Error(`HTTP ${response.status}`);
+        await sleep(2 ** (attempt - 1) * 1_000);
+        continue;
+      }
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      return await response.json();
+    } catch (error) {
+      if (attempt === maxRetries) throw error;
+      await sleep(2 ** (attempt - 1) * 1_000);
+    }
+  }
+}
 
 async function populateTotal() {
   const url = 'https://api.myscheme.gov.in/search/v6/schemes/facets?lang=en';
-
-  try {
-    const res = await fetch(url, { method: 'GET', headers: HEADERS });
-    if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
-
-    const response = await res.json();
-    total = response?.data?.summary?.total || 0;
-    console.log(`Target total schemes: ${total}`);
-  } catch (err) {
-    console.error('Failed to get total count:', err.message);
-  }
+  const response = await fetchJson(url, { method: 'GET', headers: HEADERS });
+  return Number(response?.data?.summary?.total || 0);
 }
 
 async function getSchemes(from = 0, size = 50) {
@@ -41,65 +47,34 @@ async function getSchemes(from = 0, size = 50) {
 
   const url = `https://api.myscheme.gov.in/search/v6/schemes?${params.toString()}`;
 
-  try {
-    const res = await fetch(url, { method: 'GET', headers: HEADERS });
-    if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
-
-    const json = await res.json();
-    const items = json?.data?.hits?.items || [];
-
-    items.forEach((item) => {
-      const slug = item.fields?.slug || item.slug || item.id;
-      if (slug) {
-        slugs.push(slug);
-      }
-    });
-
-    console.log(`Fetched offset ${from}..${from + items.length} | Collected slugs: ${slugs.length}`);
-    return items.length;
-  } catch (err) {
-    console.error(`Request failed at offset ${from}:`, err.message);
-    return 0;
-  }
+  const json = await fetchJson(url, { method: 'GET', headers: HEADERS });
+  return json?.data?.hits?.items || [];
 }
 
-async function populateSlugData() {
-  await populateTotal();
-
-  if (total === 0) {
-    console.error('Total is 0, aborting.');
-    return;
-  }
+export async function populateSlugData() {
+  const total = await populateTotal();
+  if (total === 0) throw new Error('The API returned zero schemes');
 
   const PAGE_SIZE = 50;
   let from = 0;
+  const slugs = new Set();
 
   while (from < total) {
-    const fetchedCount = await getSchemes(from, PAGE_SIZE);
+    const items = await getSchemes(from, PAGE_SIZE);
+    const fetchedCount = items.length;
+    items.forEach((item) => {
+      const value = item.fields?.slug || item.slug || item.id;
+      if (value) slugs.add(value);
+    });
 
-    if (fetchedCount === 0) {
-      console.warn('No more items returned, breaking early.');
-      break;
-    }
+    if (fetchedCount === 0) throw new Error(`The API returned no items at offset ${from}`);
 
-    from += PAGE_SIZE;
+    from += fetchedCount;
+    console.log(`Fetched offset ${from - fetchedCount}..${from} | Collected slugs: ${slugs.size}`);
     await sleep(250);
   }
 
-  console.log(`\nSuccessfully gathered ${slugs.length} total slugs!`);
+  return [...slugs];
 }
 
-// Notice the async keyword here and the reference to 'slugs'
-populateSlugData()
-  .then(async () => {
-    const filename = 'slugs.json';
-    try {
-      await fs.writeFile(filename, JSON.stringify(slugs, null, 2), 'utf-8');
-      console.log(`Saved ${slugs.length} slugs to ${filename}`);
-    } catch (err) {
-      console.error('Failed to write JSON file:', err);
-    }
-  })
-  .catch((err) => {
-    console.error('Execution error:', err);
-  });
+

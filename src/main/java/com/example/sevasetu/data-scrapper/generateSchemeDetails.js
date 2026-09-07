@@ -1,4 +1,5 @@
-import fs from 'node:fs';
+import fs from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import ExcelJS from 'exceljs';
 
 const HEADERS = {
@@ -14,11 +15,11 @@ const HEADERS = {
   'sec-fetch-site': 'same-site',
   'sec-gpc': '1',
   'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36',
-  'x-api-key': 'tYTy5eEhlu9rFjyxuCr7ra7ACp4dv1RH8gWuHTDc'
+  'x-api-key': process.env.MYSCHEME_API_KEY || 'tYTy5eEhlu9rFjyxuCr7ra7ACp4dv1RH8gWuHTDc'
 };
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-const CACHE_FILE = './scraped_records.json';
+const CACHE_FILE = fileURLToPath(new URL('./scraped_records.json', import.meta.url));
 
 // Fetch with Exponential Backoff on 429
 async function fetchDataForSlug(slug, maxRetries = 5) {
@@ -29,12 +30,12 @@ async function fetchDataForSlug(slug, maxRetries = 5) {
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      const res = await fetch(url, { method: 'GET', headers: HEADERS });
+      const res = await fetch(url, { method: 'GET', headers: HEADERS, signal: AbortSignal.timeout(30_000) });
 
       if (res.status === 429) {
         console.warn(`[429 Rate Limit] Pausing ${retryDelay / 1000}s on slug "${slug}" (Attempt ${attempt}/${maxRetries})...`);
         await sleep(retryDelay);
-        retryDelay *= 2; // exponential backoff: 2s -> 4s -> 8s -> 16s
+        retryDelay = 2; // exponential backoff: 2s -> 4s -> 8s -> 16s
         continue;
       }
 
@@ -99,44 +100,46 @@ function* getBatches(array, size = 3) {
   }
 }
 
-async function exportAllSchemesToExcel(outputFilename = 'all_schemes.xlsx') {
-  const allSlugs = JSON.parse(fs.readFileSync('./slugs.json', 'utf8'));
+export async function exportAllSchemesToExcel(allSlugs, outputFilename = 'all_schemes.xlsx') {
+  if (!Array.isArray(allSlugs) || allSlugs.length === 0) throw new Error('No slugs were provided');
 
   // Load existing checkpoint if available
   let cachedRecords = {};
-  if (fs.existsSync(CACHE_FILE)) {
-    try {
-      cachedRecords = JSON.parse(fs.readFileSync(CACHE_FILE, 'utf8'));
-      console.log(`Resuming from cache: found ${Object.keys(cachedRecords).length} already completed.`);
-    } catch {
-      cachedRecords = {};
+  try {
+    const cache = await fs.readFile(CACHE_FILE, 'utf8');
+    cachedRecords = JSON.parse(cache);
+    if (!cachedRecords || Array.isArray(cachedRecords) || typeof cachedRecords !== 'object') {
+      throw new Error('Cache must contain an object keyed by slug');
     }
+  } catch (error) {
+    if (error.code !== 'ENOENT') console.warn(`Ignoring invalid cache: ${error.message}`);
+    cachedRecords = {};
   }
+
+  // Only trust records keyed by a current slug. This ignores caches from the old index-based implementation.
+  cachedRecords = Object.fromEntries(
+    allSlugs
+      .filter((slug) => cachedRecords[slug] && cachedRecords[slug].slug === slug)
+      .map((slug) => [slug, cachedRecords[slug]])
+  );
+  console.log(`Resuming from cache: found ${Object.keys(cachedRecords).length} already completed.`);
 
   // Filter out slugs we already have
   const remainingSlugs = allSlugs.filter(slug => !cachedRecords[slug]);
   console.log(`Remaining to fetch: ${remainingSlugs.length} / ${allSlugs.length}\n`);
 
-  // Batch size 3 + 400ms delay avoids tripping the sliding-window threshold
-  const BATCH_SIZE = 3;
   let count = Object.keys(cachedRecords).length;
 
-  for (const slugBatch of getBatches(remainingSlugs, BATCH_SIZE)) {
-    const batchResponses = await Promise.all(
-      slugBatch.map(slug => fetchDataForSlug(slug))
-    );
+  for (const slug of remainingSlugs) {
+    const batchResponses = await fetchDataForSlug(slug);
+    if (!batchResponses) continue;
+    cachedRecords[slug] = mapSchemeToExcelRow(batchResponses);
 
-    slugBatch.forEach((slug, idx) => {
-      if (batchResponses[idx]) {
-        cachedRecords[slug] = mapSchemeToExcelRow(batchResponses[idx]);
-      }
-    });
-
-    count += slugBatch.length;
+    count += 1;
 
     // Periodic checkpoint save every 30 items
     if (count % 30 === 0 || count >= allSlugs.length) {
-      fs.writeFileSync(CACHE_FILE, JSON.stringify(cachedRecords, null, 2), 'utf8');
+      await fs.writeFile(CACHE_FILE, JSON.stringify(cachedRecords, null, 2), 'utf8');
       console.log(`Progress: ${count} / ${allSlugs.length} (${Math.round((count / allSlugs.length) * 100)}%) — Checkpoint saved.`);
     }
 
@@ -177,10 +180,13 @@ async function exportAllSchemesToExcel(outputFilename = 'all_schemes.xlsx') {
     fgColor: { argb: 'FF1F4E79' }
   };
 
-  Object.values(cachedRecords).forEach(row => worksheet.addRow(row));
+  for (const slug of allSlugs) {
+    const record = cachedRecords[slug];
+    if (record) worksheet.addRow(record);
+  }
 
   await workbook.xlsx.writeFile(outputFilename);
   console.log(`Finished! Excel written to ${outputFilename}`);
 }
 
-exportAllSchemesToExcel();
+

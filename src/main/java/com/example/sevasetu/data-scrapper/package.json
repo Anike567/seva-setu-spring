@@ -1,4 +1,14 @@
 {
+  "name": "sevasetu-data-scrapper",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node dataScrapPipeline.js",
+    "check": "node --check dataScrapPipeline.js && node --check saveSlugs.js && node --check generateSchemeDetails.js && node --check cleanData.js"
+  },
   "dependencies": {
     "exceljs": "^4.4.0"
   }
