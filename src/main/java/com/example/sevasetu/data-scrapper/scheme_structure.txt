@@ -1,0 +1,245 @@
+[string] _id
+  -> Value: "628727c27d5de378dc7acfe9"
+
+[Array (1 items)] en.applicationProcess[]
+  -> Value: {"mode":"Online","url":"www.standupmitra.in","process":[{"type":"paragraph","children":[{"text":"Either approach your nearest bank branch to apply (locate your nearest bank here - "},{"type":"link","link":"https://www.rbi.org.in/Scripts/query.aspx","children":[{"text":"https://www.rbi.org.in/Scripts/query.aspx "}]},{"text":")Or Through the Lead District Manager (LDM) (find the address and the email of the LDM of your district here - "},{"type":"link","link":"https://www.standupmitra.in/LDMS#NoBack","children":[{"text":"https://www.standupmitra.in/LDMS#NoBack"}]},{"text":")"}]},{"type":"paragraph","children":[{"text":"Or Apply Through Portal: "},{"type":"link","link":"https://www.standupmitra.in/","children":[{"text":"www.standupmitra.in"}]},{"text":""}]},{"type":"paragraph","children":[{"text":"Process:","bold":true}]},{"type":"ol_list","children":[{"type":"list_item","children":[{"text":"The first step is to visit the official portal of StandUp India at: "},{"type":"link","link":"https://www.standupmitra.in/Login/Register","children":[{"text":"https://www.standupmitra.in/Login/Register"}]},{"text":" "}]},{"type":"list_item","children":[{"text":"Enter the full details of the business location."}]},{"type":"list_item","children":[{"text":"Select the category between SC, ST, Woman, and whether the stake held is 51% or higher."}]},{"type":"list_item","children":[{"text":"Select the nature of the proposed business; the loan amount desired description of the business, the details of the premises, etc."}]},{"type":"list_item","children":[{"text":"Populate the fields with past business experience, including tenure."}]},{"type":"list_item","children":[{"text":"Select the need for hand-holding is required."}]},{"type":"list_item","children":[{"text":"Enter all the personal details sought, which include the name of the enterprise and the constitution."}]},{"type":"list_item","children":[{"text":"The last step is to select the register button to complete the process."}]}]},{"type":"paragraph","children":[{"text":"Once you have completed registration, you are eligible to initiate the StandUp India Loan Application process with the respective financial institution for the officials to contact you for completing the StandUp India Loan Process and requisite formalities."}]}],"process_md":"Either approach your nearest bank branch to apply (locate your nearest bank here - [https://www.rbi.org.in/Scripts/query.aspx ](https://www.rbi.org.in/Scripts/query.aspx))Or Through the Lead District Manager (LDM) (find the address and the email of the LDM of your district here - [https://www.standupmitra.in/LDMS#NoBack](https://www.standupmitra.in/LDMS#NoBack))\nOr Apply Through Portal: [www.standupmitra.in](https://www.standupmitra.in/)\n**Process:**\n\n1. The first step is to visit the official portal of StandUp India at: [https://www.standupmitra.in/Login/Register](https://www.standupmitra.in/Login/Register) 1. Enter the full details of the business location.\n1. Select the category between SC, ST, Woman, and whether the stake held is 51% or higher.\n1. Select the nature of the proposed business; the loan amount desired description of the business, the details of the premises, etc.\n1. Populate the fields with past business experience, including tenure.\n1. Select the need for hand-holding is required.\n1. Enter all the personal details sought, which include the name of the enterprise and the constitution.\n1. The last step is to select the register button to complete the process.\n\nOnce you have completed registration, you are eligible to initiate the StandUp India Loan Application process with the respective financial institution for the officials to contact you for completing the StandUp India Loan Process and requisite formalities.\n"}
+
+[string] en.applicationProcess[].mode
+  -> Value: "Online"
+
+[string] en.applicationProcess[].process_md
+  -> Value: Either approach your nearest bank branch to apply (locate your nearest bank here...
+
+[Array (5 items)] en.applicationProcess[].process[]
+  -> Value: {"type":"paragraph","children":[{"text":"Either approach your nearest bank branch to apply (locate your nearest bank here - "},{"type":"link","link":"https://www.rbi.org.in/Scripts/query.aspx","children":[{"text":"https://www.rbi.org.in/Scripts/query.aspx "}]},{"text":")Or Through the Lead District Manager (LDM) (find the address and the email of the LDM of your district here - "},{"type":"link","link":"https://www.standupmitra.in/LDMS#NoBack","children":[{"text":"https://www.standupmitra.in/LDMS#NoBack"}]},{"text":")"}]}
+
+[Array (5 items)] en.applicationProcess[].process[].children[]
+  -> Value: {"text":"Either approach your nearest bank branch to apply (locate your nearest bank here - "}
+
+[string] en.applicationProcess[].process[].children[].text
+  -> Value: Either approach your nearest bank branch to apply (locate your nearest bank here...
+
+[string] en.applicationProcess[].process[].type
+  -> Value: "paragraph"
+
+[string] en.applicationProcess[].url
+  -> Value: "www.standupmitra.in"
+
+[boolean] en.basicDetails.dbtScheme
+  -> Value: false
+
+[string] en.basicDetails.implementingAgency
+  -> Value: "Banks"
+
+[string] en.basicDetails.level.label
+  -> Value: "Central"
+
+[string] en.basicDetails.level.value
+  -> Value: "central"
+
+[string] en.basicDetails.nodalDepartmentName.label
+  -> Value: "Department of Financial Service"
+
+[number] en.basicDetails.nodalDepartmentName.value
+  -> Value: 1174
+
+[string] en.basicDetails.nodalMinistryName.label
+  -> Value: "Ministry Of Finance"
+
+[number] en.basicDetails.nodalMinistryName.value
+  -> Value: 499
+
+[Array (3 items)] en.basicDetails.schemeCategory[]
+  -> Value: {"value":"628ce733d6d1a3bde4685278","label":"Business & Entrepreneurship"}
+
+[string] en.basicDetails.schemeCategory[].label
+  -> Value: "Business & Entrepreneurship"
+
+[string] en.basicDetails.schemeCategory[].value
+  -> Value: "628ce733d6d1a3bde4685278"
+
+[string] en.basicDetails.schemeCloseDate
+  -> Value: "2025-03-31"
+
+[string] en.basicDetails.schemeFor
+  -> Value: "Individual"
+
+[string] en.basicDetails.schemeName
+  -> Value: "Stand-Up India"
+
+[string] en.basicDetails.schemeOpenDate
+  -> Value: "2016-04-05"
+
+[string] en.basicDetails.schemeShortTitle
+  -> Value: "SUPI"
+
+[Array (2 items)] en.basicDetails.schemeSubCategory[]
+  -> Value: {"value":"Banking and money","label":"Banking and money"}
+
+[string] en.basicDetails.schemeSubCategory[].label
+  -> Value: "Banking and money"
+
+[string] en.basicDetails.schemeSubCategory[].value
+  -> Value: "Banking and money"
+
+[string] en.basicDetails.schemeType.label
+  -> Value: "Central Sector Scheme"
+
+[string] en.basicDetails.schemeType.value
+  -> Value: "central-sector-scheme"
+
+[Array (4 items)] en.basicDetails.tags[]
+  -> Value: "Loan"
+
+[Array (2 items)] en.basicDetails.targetBeneficiaries[]
+  -> Value: {"value":"individual","label":"Individual"}
+
+[string] en.basicDetails.targetBeneficiaries[].label
+  -> Value: "Individual"
+
+[string] en.basicDetails.targetBeneficiaries[].value
+  -> Value: "individual"
+
+[string] en.eligibilityCriteria.eligibilityDescription_md
+  -> Value: 
+- Finance is  provided for Greenfield Enterprises.
+- If the applicant is a male...
+
+[Array (1 items)] en.eligibilityCriteria.eligibilityDescription[]
+  -> Value: {"type":"ol_list","children":[{"type":"align_justify","children":[{"type":"list_item","children":[{"text":"Finance is  provided for Greenfield Enterprises."}]}]},{"type":"align_justify","children":[{"type":"list_item","children":[{"text":"If the applicant is a male, he must be from SC / ST category."}]}]},{"type":"align_justify","children":[{"type":"list_item","children":[{"text":"The age of the applicant must be at least 18 years."}]}]},{"type":"align_justify","children":[{"type":"list_item","children":[{"text":"The applicant must not be in default to any bank/financial institution."}]}]}]}
+
+[Array (4 items)] en.eligibilityCriteria.eligibilityDescription[].children[]
+  -> Value: {"type":"align_justify","children":[{"type":"list_item","children":[{"text":"Finance is  provided for Greenfield Enterprises."}]}]}
+
+[Array (1 items)] en.eligibilityCriteria.eligibilityDescription[].children[].children[]
+  -> Value: {"type":"list_item","children":[{"text":"Finance is  provided for Greenfield Enterprises."}]}
+
+[Array (1 items)] en.eligibilityCriteria.eligibilityDescription[].children[].children[].children[]
+  -> Value: {"text":"Finance is  provided for Greenfield Enterprises."}
+
+[string] en.eligibilityCriteria.eligibilityDescription[].children[].children[].children[].text
+  -> Value: "Finance is  provided for Greenfield Enterprises."
+
+[string] en.eligibilityCriteria.eligibilityDescription[].children[].children[].type
+  -> Value: "list_item"
+
+[string] en.eligibilityCriteria.eligibilityDescription[].children[].type
+  -> Value: "align_justify"
+
+[string] en.eligibilityCriteria.eligibilityDescription[].type
+  -> Value: "ol_list"
+
+[string] en.schemeContent.benefits_md
+  -> Value: 
+1. Facilitation of composite loan (inclusive of term loan and working capital) ...
+
+[Array (1 items)] en.schemeContent.benefits[]
+  -> Value: {"type":"ol_list","children":[{"type":"list_item","children":[{"text":"Facilitation of composite loan (inclusive of term loan and working capital) between ₹10 Lakhs and ₹100 Lakhs. Rupay debit card to be issued for convenience of the borrower."}]},{"type":"list_item","children":[{"text":"The web portal by SIDBI provides hand-holding support through a network of agencies engaged in training, skill development, mentoring, project report preparation, application filling, work shed / utility support services, subsidy schemes etc."}]}]}
+
+[Array (2 items)] en.schemeContent.benefits[].children[]
+  -> Value: {"type":"list_item","children":[{"text":"Facilitation of composite loan (inclusive of term loan and working capital) between ₹10 Lakhs and ₹100 Lakhs. Rupay debit card to be issued for convenience of the borrower."}]}
+
+[Array (1 items)] en.schemeContent.benefits[].children[].children[]
+  -> Value: {"text":"Facilitation of composite loan (inclusive of term loan and working capital) between ₹10 Lakhs and ₹100 Lakhs. Rupay debit card to be issued for convenience of the borrower."}
+
+[string] en.schemeContent.benefits[].children[].children[].text
+  -> Value: Facilitation of composite loan (inclusive of term loan and working capital) betw...
+
+[string] en.schemeContent.benefits[].children[].type
+  -> Value: "list_item"
+
+[string] en.schemeContent.benefits[].type
+  -> Value: "ol_list"
+
+[number] en.schemeContent.benefitTypes.id
+  -> Value: 1
+
+[string] en.schemeContent.benefitTypes.label
+  -> Value: "Cash"
+
+[string] en.schemeContent.benefitTypes.value
+  -> Value: "cash"
+
+[string] en.schemeContent.briefDescription
+  -> Value: A scheme by Ministry of Finance for financing SC/ST and  Women Entrepreneurs by ...
+
+[string] en.schemeContent.detailedDescription_md
+  -> Value: A scheme by Ministry of Finance for financing SC/ST and/or Women Entrepreneurs b...
+
+[Array (1 items)] en.schemeContent.detailedDescription[]
+  -> Value: {"type":"align_justify","children":[{"type":"paragraph","children":[{"text":"A scheme by Ministry of Finance for financing SC/ST and/or Women Entrepreneurs by facilitating bank loans for setting up a greenfield project  enterprise in manufacturing, services, trading sector and activities allied to agriculture. The objective of this scheme is to facilitate bank loans between Rs. 10 lakh and Rs. 1 Crore to at least one Scheduled Caste (SC) or Scheduled Tribe (ST) borrower and at least one woman borrower per bank branch for setting up a greenfield enterprise. In case of non-individual enterprises, at least 51% of the shareholding and controlling stake should be held by either an SC/ST or Woman entrepreneur."}]}]}
+
+[Array (1 items)] en.schemeContent.detailedDescription[].children[]
+  -> Value: {"type":"paragraph","children":[{"text":"A scheme by Ministry of Finance for financing SC/ST and/or Women Entrepreneurs by facilitating bank loans for setting up a greenfield project  enterprise in manufacturing, services, trading sector and activities allied to agriculture. The objective of this scheme is to facilitate bank loans between Rs. 10 lakh and Rs. 1 Crore to at least one Scheduled Caste (SC) or Scheduled Tribe (ST) borrower and at least one woman borrower per bank branch for setting up a greenfield enterprise. In case of non-individual enterprises, at least 51% of the shareholding and controlling stake should be held by either an SC/ST or Woman entrepreneur."}]}
+
+[Array (1 items)] en.schemeContent.detailedDescription[].children[].children[]
+  -> Value: {"text":"A scheme by Ministry of Finance for financing SC/ST and/or Women Entrepreneurs by facilitating bank loans for setting up a greenfield project  enterprise in manufacturing, services, trading sector and activities allied to agriculture. The objective of this scheme is to facilitate bank loans between Rs. 10 lakh and Rs. 1 Crore to at least one Scheduled Caste (SC) or Scheduled Tribe (ST) borrower and at least one woman borrower per bank branch for setting up a greenfield enterprise. In case of non-individual enterprises, at least 51% of the shareholding and controlling stake should be held by either an SC/ST or Woman entrepreneur."}
+
+[string] en.schemeContent.detailedDescription[].children[].children[].text
+  -> Value: A scheme by Ministry of Finance for financing SC/ST and/or Women Entrepreneurs b...
+
+[string] en.schemeContent.detailedDescription[].children[].type
+  -> Value: "paragraph"
+
+[string] en.schemeContent.detailedDescription[].type
+  -> Value: "align_justify"
+
+[string] en.schemeContent.exclusions_md
+  -> Value: "<br>\n\n"
+
+[Array (1 items)] en.schemeContent.exclusions[]
+  -> Value: {"type":"paragraph","children":[{"text":""}]}
+
+[Array (1 items)] en.schemeContent.exclusions[].children[]
+  -> Value: {"text":""}
+
+[string] en.schemeContent.exclusions[].children[].text
+  -> Value: ""
+
+[string] en.schemeContent.exclusions[].type
+  -> Value: "paragraph"
+
+[Array (1 items)] en.schemeContent.references[]
+  -> Value: {"title":"Guidelines","url":"https://www.udyami.org.in/storage/schemes/file/t4CQkv4D2TsdhI3MK8KqFSnYPw6RTBBsmh7p449D.pdf"}
+
+[string] en.schemeContent.references[].title
+  -> Value: "Guidelines"
+
+[string] en.schemeContent.references[].url
+  -> Value: https://www.udyami.org.in/storage/schemes/file/t4CQkv4D2TsdhI3MK8KqFSnYPw6RTBBsm...
+
+[string] en.schemeContent.schemeImageUrl
+  -> Value: "  https://standupmitra.in/Images/standuplogo.gif    "
+
+[Array (1 items)] en.schemeDefinitions[]
+  -> Value: {"name":"greenfield project","definition":[{"type":"align_justify","children":[{"type":"paragraph","children":[{"text":"Green field project signifies, in this context, the first time venture of the beneficiary in the manufacturing or services or trading sector and  activities allied to agriculture ."}]}]}],"source":"https://www.udyami.org.in/storage/schemes/file/t4CQkv4D2TsdhI3MK8KqFSnYPw6RTBBsmh7p449D.pdf","definitions_md":"Green field project signifies, in this context, the first time venture of the beneficiary in the manufacturing or services or trading sector and  activities allied to agriculture .\n"}
+
+[Array (1 items)] en.schemeDefinitions[].definition[]
+  -> Value: {"type":"align_justify","children":[{"type":"paragraph","children":[{"text":"Green field project signifies, in this context, the first time venture of the beneficiary in the manufacturing or services or trading sector and  activities allied to agriculture ."}]}]}
+
+[Array (1 items)] en.schemeDefinitions[].definition[].children[]
+  -> Value: {"type":"paragraph","children":[{"text":"Green field project signifies, in this context, the first time venture of the beneficiary in the manufacturing or services or trading sector and  activities allied to agriculture ."}]}
+
+[Array (1 items)] en.schemeDefinitions[].definition[].children[].children[]
+  -> Value: {"text":"Green field project signifies, in this context, the first time venture of the beneficiary in the manufacturing or services or trading sector and  activities allied to agriculture ."}
+
+[string] en.schemeDefinitions[].definition[].children[].children[].text
+  -> Value: Green field project signifies, in this context, the first time venture of the be...
+
+[string] en.schemeDefinitions[].definition[].children[].type
+  -> Value: "paragraph"
+
+[string] en.schemeDefinitions[].definition[].type
+  -> Value: "align_justify"
+
+[string] en.schemeDefinitions[].definitions_md
+  -> Value: Green field project signifies, in this context, the first time venture of the be...
+
+[string] en.schemeDefinitions[].name
+  -> Value: "greenfield project"
+
+[string] en.schemeDefinitions[].source
+  -> Value: https://www.udyami.org.in/storage/schemes/file/t4CQkv4D2TsdhI3MK8KqFSnYPw6RTBBsm...
+
+[string] slug
+  -> Value: "sui"
