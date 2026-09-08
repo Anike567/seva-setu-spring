@@ -1,3 +1,6 @@
+import fs from "fs/promises";
+import path from "path";
+
 async function fetchFilterLabelAndCount() {
   try {
     const res = await fetch(
@@ -100,7 +103,37 @@ async function fetchSlugsForFilters(filters) {
     console.log(`Found ${filters.length} filter categories. Fetching slugs...`);
 
     const slugsByIdentifier = await fetchSlugsForFilters(filters);
-    console.log(JSON.stringify(slugsByIdentifier, null, 2));
+
+    // --- Format A: Flat list of objects (matches your SQL table schema) ---
+    const flatRecords = [];
+    for (const [identifier, labelGroup] of Object.entries(slugsByIdentifier)) {
+      for (const [label, slugs] of Object.entries(labelGroup)) {
+        for (const slug of slugs) {
+          flatRecords.push({
+            identifier,
+            label,
+            slug,
+          });
+        }
+      }
+    }
+
+    const flatJsonPath = path.join(process.cwd(), "filter_slugs.json");
+    await fs.writeFile(
+      flatJsonPath,
+      JSON.stringify(flatRecords, null, 2),
+      "utf-8"
+    );
+    console.log(`Saved ${flatRecords.length} records to: ${flatJsonPath}`);
+
+    // --- Format B: Nested grouped object (caste -> label -> [slugs]) ---
+    const nestedJsonPath = path.join(process.cwd(), "slugs_by_identifier.json");
+    await fs.writeFile(
+      nestedJsonPath,
+      JSON.stringify(slugsByIdentifier, null, 2),
+      "utf-8"
+    );
+    console.log(`Saved grouped hierarchy to: ${nestedJsonPath}`);
   } catch (err) {
     console.error("Pipeline failed:", err);
   }
