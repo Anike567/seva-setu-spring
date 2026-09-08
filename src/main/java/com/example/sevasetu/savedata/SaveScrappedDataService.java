@@ -1,20 +1,18 @@
 package com.example.sevasetu.savedata;
 
+import com.example.sevasetu.common.ApiResponse;
+import com.example.sevasetu.savedata.dto.ReadJsonDto;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.example.sevasetu.common.ApiResponse;
-import com.example.sevasetu.savedata.dto.ReadJsonDto;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class SaveScrappedDataService {
@@ -23,15 +21,22 @@ public class SaveScrappedDataService {
     private final ObjectMapper objectMapper;
 
     // Inject JdbcTemplate instead of JdbcClient for native batch operations
-    public SaveScrappedDataService(JdbcTemplate jdbcTemplate, ObjectMapper objectMapper) {
+    public SaveScrappedDataService(
+        JdbcTemplate jdbcTemplate,
+        ObjectMapper objectMapper
+    ) {
         this.jdbcTemplate = jdbcTemplate;
         this.objectMapper = objectMapper;
     }
 
     @Transactional
-    public ResponseEntity<ApiResponse<Map<String, String>>> saveFilterWithSlug() {
+    public ResponseEntity<
+        ApiResponse<Map<String, String>>
+    > saveFilterWithSlug() {
         try {
-            File file = new File("/home/aniket/seva-setu-java/seva-setu-spring/src/main/java/com/example/sevasetu/data-scrapper/filter_slugs.json");
+            File file = new File(
+                "/home/aniket/seva-setu-java/seva-setu-spring/src/main/java/com/example/sevasetu/data-scrapper/filter_slugs.json"
+            );
             List<ReadJsonDto> list = objectMapper.readValue(
                 file,
                 new TypeReference<List<ReadJsonDto>>() {}
@@ -68,15 +73,24 @@ public class SaveScrappedDataService {
             }
 
             Map<String, String> result = Map.of(
-                "status", "success",
-                "totalRead", String.valueOf(list.size()),
-                "inserted", String.valueOf(totalInserted)
+                "status",
+                "success",
+                "totalRead",
+                String.valueOf(list.size()),
+                "inserted",
+                String.valueOf(totalInserted)
             );
 
-            return ResponseEntity.ok(ApiResponse.success("filters saved successfully", result));
-
+            return ResponseEntity.ok(
+                ApiResponse.success("filters saved successfully", result)
+            );
         } catch (IOException io) {
-            throw new RuntimeException("Failed to read JSON: " + io.getMessage(), io);
+            throw new RuntimeException(
+                "Failed to read JSON: " + io.getMessage(),
+                io
+            );
         }
     }
+
+    // public ResourcePoolEntry<Map<String, List<String>>> saveSchemeInfo()
 }
