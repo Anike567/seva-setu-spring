@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.sevasetu.common.ApiResponse;
+import com.example.sevasetu.savedata.dto.SchemeRowDto;
 import com.example.sevasetu.schemes.dto.Filter;
 
 @RestController
@@ -24,7 +25,7 @@ public class SchemesController {
 
     // Accessible via: GET /schemes?identifier=abc&label=xyz
     @GetMapping
-    public ResponseEntity<ApiResponse<List<String>>> getSchemes(
+    public ResponseEntity<ApiResponse<List<SchemeRowDto>>> getSchemes(
         @RequestParam(name = "identifier", required = false) String identifier,
         @RequestParam(name = "label", required = false) String label
     ) {

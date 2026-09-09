@@ -18,7 +18,7 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
 
 
-@RestController
+@RestController()
 @RequestMapping("/auth")
 public class AuthController {
     private AuthService authService;

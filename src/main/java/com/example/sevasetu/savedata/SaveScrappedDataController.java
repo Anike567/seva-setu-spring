@@ -37,4 +37,8 @@ public class SaveScrappedDataController {
         return this.saveScrappeddataService.saveFilterWithSlug();
     }
 
+    @GetMapping ("/save-scheme-data")
+    public ResponseEntity<ApiResponse<Map<String, String>>> saveSchemeData(){
+        return  this.saveScrappeddataService.saveSchemesData();
+    }
 }

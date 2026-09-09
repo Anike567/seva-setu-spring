@@ -97,7 +97,7 @@ async function fetchSlugsForFilters(filters) {
 }
 
 // Execution pipeline
-(async () => {
+export const fetchFilterSlugsAndIdentifier = async () => {
   try {
     const filters = await fetchFilterLabelAndCount();
     console.log(`Found ${filters.length} filter categories. Fetching slugs...`);
@@ -137,4 +137,4 @@ async function fetchSlugsForFilters(filters) {
   } catch (err) {
     console.error("Pipeline failed:", err);
   }
-})();
+}

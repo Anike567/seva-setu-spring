@@ -1,6 +1,7 @@
 package com.example.sevasetu.schemes;
 
 import com.example.sevasetu.common.ApiResponse;
+import com.example.sevasetu.savedata.dto.SchemeRowDto; // or your Scheme response DTO
 import com.example.sevasetu.schemes.dto.Filter;
 import java.sql.Array;
 import java.util.Arrays;
@@ -20,40 +21,49 @@ public class SchemesService {
         this.jdbcClient = jdbcClient;
     }
 
-    public ResponseEntity<ApiResponse<List<String>>> getSchemes(
+    public ResponseEntity<ApiResponse<List<SchemeRowDto>>> getSchemes(
         Filter filterDto
     ) {
         StringBuilder sql = new StringBuilder(
-            "SELECT slug FROM filter_slugs WHERE 1=1"
+            """
+            SELECT * FROM schemes
+            WHERE slug IN (
+                SELECT slug FROM filter_slugs WHERE 1=1
+            """
         );
-        var clientSpec = jdbcClient.sql("");
 
-        if (
-            filterDto.identifier() != null && !filterDto.identifier().isBlank()
-        ) {
+        boolean hasIdentifier =
+            filterDto != null &&
+            filterDto.identifier() != null &&
+            !filterDto.identifier().isBlank();
+        boolean hasLabel =
+            filterDto != null &&
+            filterDto.label() != null &&
+            !filterDto.label().isBlank();
+
+        if (hasIdentifier) {
             sql.append(" AND identifier = :identifier");
         }
-        if (filterDto.label() != null && !filterDto.label().isBlank()) {
+        if (hasLabel) {
             sql.append(" AND label = :label");
         }
 
-        sql.append(" LIMIT 10");
+        // Close the subquery before LIMIT
+        sql.append(") LIMIT 10");
 
         var spec = jdbcClient.sql(sql.toString());
 
-        if (
-            filterDto.identifier() != null && !filterDto.identifier().isBlank()
-        ) {
+        if (hasIdentifier) {
             spec = spec.param("identifier", filterDto.identifier());
         }
-        if (filterDto.label() != null && !filterDto.label().isBlank()) {
+        if (hasLabel) {
             spec = spec.param("label", filterDto.label());
         }
 
-        List<String> slugs = spec.query(String.class).list();
+        List<SchemeRowDto> schemes = spec.query(SchemeRowDto.class).list();
 
         return ResponseEntity.ok(
-            ApiResponse.success("Fetched schemes successfully", slugs)
+            ApiResponse.success("Fetched schemes successfully", schemes)
         );
     }
 
