@@ -1,21 +1,13 @@
 package com.example.sevasetu.savedata.dto;
 
+import java.time.OffsetDateTime;
+import java.util.Map;
+import java.util.UUID;
+
 public record SchemeRowDto(
-    String id,
+    UUID id,
     String slug,
-    String schemeName,
-    String shortTitle,
-    String ministry,
-    String department,
-    String level,
-    String schemeFor,
-    String targetBeneficiaries, // stored as serialized string / JSON / comma-separated text
-    String categories,          // stored as serialized string / JSON / comma-separated text
-    String openDate,
-    String closeDate,
-    String briefDescription,
-    String detailedDescription,
-    String benefits,
-    String eligibility,
-    String exclusions
+    Map<String, Object> details,
+    OffsetDateTime createdAt,
+    OffsetDateTime updatedAt
 ) {}

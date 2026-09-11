@@ -1,29 +1,19 @@
 package com.example.sevasetu.savedata;
 
+import com.example.sevasetu.common.ApiResponse;
+import com.example.sevasetu.savedata.dto.ReadJsonDto;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.poi.ss.usermodel.DataFormatter;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.example.sevasetu.common.ApiResponse;
-import com.example.sevasetu.savedata.dto.ReadJsonDto;
-import com.example.sevasetu.savedata.dto.SchemeRowDto;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class SaveScrappedDataService {
@@ -31,15 +21,22 @@ public class SaveScrappedDataService {
     private final JdbcTemplate jdbcTemplate;
     private final ObjectMapper objectMapper;
 
-    public SaveScrappedDataService(JdbcTemplate jdbcTemplate, ObjectMapper objectMapper) {
+    public SaveScrappedDataService(
+        JdbcTemplate jdbcTemplate,
+        ObjectMapper objectMapper
+    ) {
         this.jdbcTemplate = jdbcTemplate;
         this.objectMapper = objectMapper;
     }
 
     @Transactional
-    public ResponseEntity<ApiResponse<Map<String, String>>> saveFilterWithSlug() {
+    public ResponseEntity<
+        ApiResponse<Map<String, String>>
+    > saveFilterWithSlug() {
         try {
-            File file = new File("/home/aniket/seva-setu-java/seva-setu-spring/src/main/java/com/example/sevasetu/data-scrapper/filter_slugs.json");
+            File file = new File(
+                "/home/aniket/seva-setu-java/seva-setu-spring/src/main/java/com/example/sevasetu/data-scrapper/filter_slugs.json"
+            );
 
             List<ReadJsonDto> list = objectMapper.readValue(
                 file,
@@ -50,7 +47,7 @@ public class SaveScrappedDataService {
             INSERT INTO filter_slugs (identifier, label, slug)
             VALUES (?, ?, ?)
             ON CONFLICT (identifier, label, slug) DO NOTHING;
-                """;
+            """;
 
             int batchSize = 1000;
             int[][] updateCounts = jdbcTemplate.batchUpdate(
@@ -72,141 +69,98 @@ public class SaveScrappedDataService {
             }
 
             Map<String, String> result = Map.of(
-                "status", "success",
-                "totalRead", String.valueOf(list.size()),
-                "inserted", String.valueOf(totalInserted)
+                "status",
+                "success",
+                "totalRead",
+                String.valueOf(list.size()),
+                "inserted",
+                String.valueOf(totalInserted)
             );
 
-            return ResponseEntity.ok(ApiResponse.success("filters saved successfully", result));
+            return ResponseEntity.ok(
+                ApiResponse.success("filters saved successfully", result)
+            );
         } catch (IOException io) {
-            throw new RuntimeException("Failed to read JSON: " + io.getMessage(), io);
+            throw new RuntimeException(
+                "Failed to read filters JSON: " + io.getMessage(),
+                io
+            );
         }
     }
 
     @Transactional
     public ResponseEntity<ApiResponse<Map<String, String>>> saveSchemesData() {
-        File schemeExcelFile = new File("/home/aniket/seva-setu-java/seva-setu-spring/src/main/java/com/example/sevasetu/data-scrapper/all_schemes_cleaned.xlsx");
+        File jsonFile = new File(
+            "/home/aniket/seva-setu-java/seva-setu-spring/src/main/java/com/example/sevasetu/data-scrapper/scraped_records.json"
+        );
 
-        List<SchemeRowDto> schemeRows = new ArrayList<>();
-        DataFormatter df = new DataFormatter();
-
-        try (FileInputStream fis = new FileInputStream(schemeExcelFile);
-             Workbook workbook = WorkbookFactory.create(fis)) {
-
-            Sheet sheet = workbook.getSheetAt(0);
-            Row headerRow = sheet.getRow(0);
-
-            if (headerRow == null) {
-                throw new IllegalStateException("Excel sheet is missing header row");
-            }
-
-            // Map column names to column indexes (case-insensitive)
-            Map<String, Integer> colMap = new HashMap<>();
-            for (int col = 0; col < headerRow.getLastCellNum(); col++) {
-                String headerVal = df.formatCellValue(headerRow.getCell(col)).trim();
-                if (!headerVal.isEmpty()) {
-                    colMap.put(headerVal.toLowerCase(), col);
-                }
-            }
-
-            // Read all data rows
-            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-                Row row = sheet.getRow(i);
-                if (row == null) continue;
-
-                String slug = getCellValue(row, colMap, "slug", df);
-                if (slug.isBlank()) continue;
-
-                schemeRows.add(new SchemeRowDto(
-                    getCellValue(row, colMap, "id", df),
-                    slug,
-                    getCellValue(row, colMap, "schemename", df),
-                    getCellValue(row, colMap, "shorttitle", df),
-                    getCellValue(row, colMap, "ministry", df),
-                    getCellValue(row, colMap, "department", df),
-                    getCellValue(row, colMap, "level", df),
-                    getCellValue(row, colMap, "schemefor", df),
-                    getCellValue(row, colMap, "targetbeneficiaries", df),
-                    getCellValue(row, colMap, "categories", df),
-                    getCellValue(row, colMap, "opendate", df),
-                    getCellValue(row, colMap, "closedate", df),
-                    getCellValue(row, colMap, "briefdescription", df),
-                    getCellValue(row, colMap, "detaileddescription", df),
-                    getCellValue(row, colMap, "benefits", df),
-                    getCellValue(row, colMap, "eligibility", df),
-                    getCellValue(row, colMap, "exclusions", df)
-                ));
-            }
+        try {
+            Map<String, Object> schemesMap = objectMapper.readValue(
+                jsonFile,
+                new TypeReference<Map<String, Object>>() {}
+            );
 
             String insertSchemeSql = """
-                INSERT INTO schemes (
-                    id, slug, scheme_name, short_title, ministry, department, level,
-                    scheme_for, target_beneficiaries, categories, open_date, close_date,
-                    brief_description, detailed_description, benefits, eligibility, exclusions
-                ) VALUES (
-                    ?, ?, ?, ?, ?, ?, ?,
-                    ?, ?, ?, ?, ?,
-                    ?, ?, ?, ?, ?
-                )
-                ON CONFLICT (slug) DO UPDATE SET
-                    id = EXCLUDED.id,
-                    scheme_name = EXCLUDED.scheme_name,
-                    short_title = EXCLUDED.short_title,
-                    ministry = EXCLUDED.ministry,
-                    department = EXCLUDED.department,
-                    level = EXCLUDED.level,
-                    scheme_for = EXCLUDED.scheme_for,
-                    target_beneficiaries = EXCLUDED.target_beneficiaries,
-                    categories = EXCLUDED.categories,
-                    open_date = EXCLUDED.open_date,
-                    close_date = EXCLUDED.close_date,
-                    brief_description = EXCLUDED.brief_description,
-                    detailed_description = EXCLUDED.detailed_description,
-                    benefits = EXCLUDED.benefits,
-                    eligibility = EXCLUDED.eligibility,
-                    exclusions = EXCLUDED.exclusions
-                """;
+            INSERT INTO schemes (slug, details)
+            VALUES (?, ?::jsonb)
+            ON CONFLICT (slug) DO UPDATE SET
+                details = EXCLUDED.details,
+                updated_at = CURRENT_TIMESTAMP;
+            """;
 
-            jdbcTemplate.batchUpdate(
+            List<Map.Entry<String, Object>> entries = new ArrayList<>(
+                schemesMap.entrySet()
+            );
+
+            int batchSize = 1000;
+            int[][] updateCounts = jdbcTemplate.batchUpdate(
                 insertSchemeSql,
-                schemeRows,
-                1000,
-                (PreparedStatement ps, SchemeRowDto s) -> {
-                    ps.setString(1, s.id());
-                    ps.setString(2, s.slug());
-                    ps.setString(3, s.schemeName());
-                    ps.setString(4, s.shortTitle());
-                    ps.setString(5, s.ministry());
-                    ps.setString(6, s.department());
-                    ps.setString(7, s.level());
-                    ps.setString(8, s.schemeFor());
-                    ps.setString(9, s.targetBeneficiaries());
-                    ps.setString(10, s.categories());
-                    ps.setString(11, s.openDate());
-                    ps.setString(12, s.closeDate());
-                    ps.setString(13, s.briefDescription());
-                    ps.setString(14, s.detailedDescription());
-                    ps.setString(15, s.benefits());
-                    ps.setString(16, s.eligibility());
-                    ps.setString(17, s.exclusions());
+                entries,
+                batchSize,
+                (PreparedStatement ps, Map.Entry<String, Object> entry) -> {
+                    ps.setString(1, entry.getKey());
+                    try {
+                        // Wrap checked exception inside lambda
+                        ps.setString(
+                            2,
+                            objectMapper.writeValueAsString(entry.getValue())
+                        );
+                    } catch (
+                        com.fasterxml.jackson.core.JsonProcessingException e
+                    ) {
+                        throw new RuntimeException(
+                            "Failed to serialize scheme JSON for slug: " +
+                                entry.getKey(),
+                            e
+                        );
+                    }
                 }
             );
 
+            int totalSaved = 0;
+            for (int[] batch : updateCounts) {
+                for (int count : batch) {
+                    if (count > 0) totalSaved += count;
+                }
+            }
+
             Map<String, String> result = Map.of(
-                "status", "success",
-                "totalRead", String.valueOf(schemeRows.size())
+                "status",
+                "success",
+                "totalRead",
+                String.valueOf(entries.size()),
+                "savedOrUpdated",
+                String.valueOf(totalSaved)
             );
 
-            return ResponseEntity.ok(ApiResponse.success("schemes saved successfully", result));
-
+            return ResponseEntity.ok(
+                ApiResponse.success("schemes saved successfully", result)
+            );
         } catch (IOException e) {
-            throw new RuntimeException("Failed to read Excel file: " + e.getMessage(), e);
+            throw new RuntimeException(
+                "Failed to read schemes JSON: " + e.getMessage(),
+                e
+            );
         }
-    }
-
-    private String getCellValue(Row row, Map<String, Integer> colMap, String colName, DataFormatter df) {
-        Integer colIdx = colMap.get(colName.toLowerCase());
-        if (colIdx == null) return "";
-        return df.formatCellValue(row.getCell(colIdx)).trim();
     }
 }

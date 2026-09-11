@@ -127,13 +127,7 @@ export const fetchFilterSlugsAndIdentifier = async () => {
     console.log(`Saved ${flatRecords.length} records to: ${flatJsonPath}`);
 
     // --- Format B: Nested grouped object (caste -> label -> [slugs]) ---
-    const nestedJsonPath = path.join(process.cwd(), "slugs_by_identifier.json");
-    await fs.writeFile(
-      nestedJsonPath,
-      JSON.stringify(slugsByIdentifier, null, 2),
-      "utf-8"
-    );
-    console.log(`Saved grouped hierarchy to: ${nestedJsonPath}`);
+
   } catch (err) {
     console.error("Pipeline failed:", err);
   }
